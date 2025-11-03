@@ -57,9 +57,6 @@ By [Jiangong Xu](https://jiangong-xu.github.io/), Yang Yang, Weibao Xue, Yingdon
 > > - `S01-S18`: 18 geographical regions
 > > - `S1A/S1C`: Sentinel-1 satellite identifier
 
-## 📦 Installation
+## 📦 Code
 
-```bash
-git clone https://github.com/JianGong-XU/MTPI-Net.git
-cd MTPI-Net
-pip install -r requirements.txt
+The source code will be available soon.
