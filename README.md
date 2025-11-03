@@ -7,18 +7,55 @@ By [Jiangong Xu](https://jiangong-xu.github.io/), Yang Yang, Weibao Xue, Yingdon
 [![Pytorch](https://img.shields.io/badge/PyTorch-1.9%2B-red)]()
 
 ## 🚀 Abstract
-Effective speckle suppression is essential for the reliable utilization of synthetic aperture radar (SAR) data. Nevertheless, despeckling remains a challenging task due to the absence of clean reference data and the inherently complex statistical characteristics of speckle noise. Existing unsupervised deep learning methods partially mitigate this issue but still struggle to exploit temporal correlations among multitemporal observations and often overlook physical constraints inherent in polarimetric information, leading to incomplete structural recovery and scattering distortion. To overcome these limitations, we propose a multitemporal progressive interaction network (MTPI-Net) built upon an enhanced Noise2Noise paradigm, which introduces a hierarchical progressive learning strategy that jointly models spatial, frequency-domain, and temporal dependencies. Its core consists of stacked dual-domain collaboration and refinement units with a recursive residual-in-recursive-attention mechanism, enabling fine-grained cross-domain interaction through perception, gating, and aggregation. A collaborative optimization loss further enforces numerical fidelity, structural preservation, and temporal coherence, guided by polarimetric priors derived from covariance statistics and decomposition features. Extensive experiments on real dual-polarization Sentinel-1 time-series data demonstrate that MTPI-Net consistently surpasses existing approaches in both quantitative and visual evaluations, effectively preserving spatial details, polarimetric consistency, and semantic integrity.
+> Effective speckle suppression is essential for the reliable utilization of synthetic aperture radar (SAR) data. Nevertheless, despeckling remains a challenging task due to the absence of clean reference data and the inherently complex statistical characteristics of speckle noise. Existing unsupervised deep learning methods partially mitigate this issue but still struggle to exploit temporal correlations among multitemporal observations and often overlook physical constraints inherent in polarimetric information, leading to incomplete structural recovery and scattering distortion. To overcome these limitations, we propose a multitemporal progressive interaction network (MTPI-Net) built upon an enhanced Noise2Noise paradigm, which introduces a hierarchical progressive learning strategy that jointly models spatial, frequency-domain, and temporal dependencies. Its core consists of stacked dual-domain collaboration and refinement units with a recursive residual-in-recursive-attention mechanism, enabling fine-grained cross-domain interaction through perception, gating, and aggregation. A collaborative optimization loss further enforces numerical fidelity, structural preservation, and temporal coherence, guided by polarimetric priors derived from covariance statistics and decomposition features. Extensive experiments on real dual-polarization Sentinel-1 time-series data demonstrate that MTPI-Net consistently surpasses existing approaches in both quantitative and visual evaluations, effectively preserving spatial details, polarimetric consistency, and semantic integrity.
+> ![MTPI-Net Architecture](figures/structure_of_MTPI-Net.png)
 
-![MTPI-Net Architecture]([figures/structure_of_MTPI-Net.png](https://github.com/JianGong-XU/MTPI-Net/blob/main/figurs/structure_of_MTPI-Net.png))
+## 📊 Dataset
 
+> We constructed a large-scale time-series dataset using Sentinel-1 dual-polarization SLC (Single Look Complex) data, which preserves full complex information including amplitude and phase - a critical advantage over commonly used GRD products.
 
+> **Key Specifications:**
+> > - **Coverage**: 18 distinct regions across China
+> > - **Temporal Design**: Triple-image sequences per region (target + two auxiliary acquisitions)
+> > - **Data Volume**: 41,004 patches (256×256 pixels)
+> > - **Split Ratio**: 5:1 training/testing
 
+> **Preprocessing**: Following ESA standards using SNAP and PolSARPro, including orbit correction, radiometric calibration, and polarimetric decomposition.
 
-## 🚀 Features
-- Dual-domain collaboration and refinement units
-- Recursive residual-in-recursive-attention mechanism
-- Multitemporal progressive learning
-- Polarimetric prior guidance
+> ### Dataset Availability
+
+> 📥 **Download**: Our dataset is available via Baidu Cloud through the [Releases](https://github.com/JianGong-XU/MTPI-Net/releases) page.
+
+> **File Structure**:
+> > Sentinel-1 time-series data/
+
+> > ├── S01/
+
+> > │ ├── S01_Ass_S1A_YYYYMMDDTHHMMSS/ # Auxiliary phase 1
+
+> > │ ├── S01_Ass_S1A_YYYYMMDDTHHMMSS/ # Auxiliary phase 2
+
+> > │ └── S01_Tar_S1A_YYYYMMDDTHHMMSS/ # Target phase
+
+> > ├── S02/
+
+> > │ ├── S02_Ass_S1C_YYYYMMDDTHHMMSS/
+
+> > │ ├── S02_Ass_S1C_YYYYMMDDTHHMMSS/
+
+> > │ └── S02_Tar_S1C_YYYYMMDDTHHMMSS/
+
+> > ├── ...
+
+> > ├── S18/
+
+> > └── Basic information.xlsx # Metadata and documentation
+
+> **Naming Convention**:
+> > - `Tar`: Target phase for despeckling
+> > - `Ass`: Auxiliary temporal phases (preceding and succeeding)
+> > - `S01-S18`: 18 geographical regions
+> > - `S1A/S1C`: Sentinel-1 satellite identifier
 
 ## 📦 Installation
 
