@@ -1,5 +1,5 @@
-# Enhanced noise2noise-based multitemporal progressive interaction learning for real dual-polarization SAR imagery despeckling
-This repository is an official implementation of the paper "Enhanced noise2noise-based multitemporal progressive interaction learning for real dual-polarization SAR imagery despeckling".
+# Enhanced noise2noise-based multitemporal progressive interaction learning for real dual-polarization SAR image despeckling
+This repository is an official implementation of the paper "Enhanced noise2noise-based multitemporal progressive interaction learning for real dual-polarization SAR image despeckling".
 
 By [Jiangong Xu](https://jiangong-xu.github.io/), Yang Yang, Weibao Xue, Yingdong Pi, Junli Li, Jun Pana, and Mi Wang
 
