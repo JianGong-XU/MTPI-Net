@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from modules.DDCR import DDCR_Unit
+from DDCR_Unit import DDCR_Unit
 
 # ---------------------------------------------------------------------
 # Feature Extraction and Normalization (FEN)
@@ -102,3 +102,4 @@ if __name__ == "__main__":
     print("Output shape:", out.shape)
     params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"Total Trainable Params: {params / 1e6:.3f} M")
+
