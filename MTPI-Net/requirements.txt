@@ -1,0 +1,7 @@
+torch>=1.12
+numpy
+tqdm
+thop
+tifffile
+scipy
+matplotlib
