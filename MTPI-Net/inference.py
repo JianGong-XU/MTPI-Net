@@ -2,7 +2,7 @@ import os
 import torch
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
-from modules.MTPI_Net import MTPI_Net
+from MTPI_Net import MTPI_Net
 
 # ================================================================
 # Inference Dataset
@@ -91,3 +91,4 @@ if __name__ == "__main__":
 
     model_ckpt = "./checkpoints/mtpi_epoch_060.pth"
     inference_mtpi(model_ckpt, example_data, save_dir="./results")
+
