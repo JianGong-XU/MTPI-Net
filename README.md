@@ -1,62 +1,156 @@
-# Enhanced noise2noise-based multitemporal progressive interaction learning for real dual-polarization SAR image despeckling
-This repository is an official implementation of the paper "Enhanced noise2noise-based multitemporal progressive interaction learning for real dual-polarization SAR image despeckling".
+# Enhanced Noise2Noise-Based Multitemporal Progressive Interaction Learning for Real Dual-Polarization SAR Image Despeckling
 
-By Jiangong Xu, Yang Yang, Weibao Xue, Yingdong Pi, Junli Li, Jun Pana, and Mi Wang
+Official PyTorch implementation of the paper  
+**"Enhanced Noise2Noise-Based Multitemporal Progressive Interaction Learning for Real Dual-Polarization SAR Image Despeckling"**
+
+By **Jiangong Xu**, **Yang Yang**, **Weibao Xue**, **Yingdong Pi**, **Junli Li**, **Jun Pan**, and **Mi Wang**  
+
 
 [![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue)]()
-[![Pytorch](https://img.shields.io/badge/PyTorch-1.9%2B-red)]()
+[![PyTorch](https://img.shields.io/badge/PyTorch-1.9%2B-red)]()
+
+---
 
 ## 🚀 Abstract
-> Effective speckle suppression is essential for the reliable utilization of synthetic aperture radar (SAR) data. Nevertheless, despeckling remains a challenging task due to the absence of clean reference data and the inherently complex statistical characteristics of speckle noise. Existing unsupervised deep learning methods partially mitigate this issue but still struggle to exploit temporal correlations among multitemporal observations and often overlook physical constraints inherent in polarimetric information, leading to incomplete structural recovery and scattering distortion. To overcome these limitations, we propose a multitemporal progressive interaction network (MTPI-Net) built upon an enhanced Noise2Noise paradigm, which introduces a hierarchical progressive learning strategy that jointly models spatial, frequency-domain, and temporal dependencies. Its core consists of stacked dual-domain collaboration and refinement units with a recursive residual-in-recursive-attention mechanism, enabling fine-grained cross-domain interaction through perception, gating, and aggregation. A collaborative optimization loss further enforces numerical fidelity, structural preservation, and temporal coherence, guided by polarimetric priors derived from covariance statistics and decomposition features. Extensive experiments on real dual-polarization Sentinel-1 time-series data demonstrate that MTPI-Net consistently surpasses existing approaches in both quantitative and visual evaluations, effectively preserving spatial details, polarimetric consistency, and semantic integrity.
-> ![MTPI-Net Architecture](figures/structure_of_MTPI-Net.png)
 
-## 📊 Dataset
+> Effective speckle suppression is essential for the reliable utilization of synthetic aperture radar (SAR) data. Nevertheless, despeckling remains a challenging task due to the absence of clean reference data and the inherently complex statistical characteristics of speckle noise. To address these limitations, we propose a **Multitemporal Progressive Interaction Network (MTPI-Net)** built upon an enhanced **Noise2Noise** paradigm. MTPI-Net introduces a hierarchical progressive learning strategy that jointly models **spatial, frequency-domain, and temporal dependencies**. It employs dual-domain collaboration and refinement units with a **recursive residual-in-recursive-attention** mechanism, enabling fine-grained cross-domain interaction through *perception*, *gating*, and *aggregation*.  A **collaborative optimization loss** enforces numerical fidelity, structural preservation, and temporal coherence, guided by polarimetric priors derived from covariance statistics and decomposition features.
 
-> We constructed a large-scale time-series dataset using Sentinel-1 dual-polarization SLC (Single Look Complex) data, which preserves full complex information including amplitude and phase - a critical advantage over commonly used GRD products.
+> <p align="center">
+>  <img src="figures/structure_of_MTPI-Net.png" width="95%">
+> </p>
 
-> **Key Specifications:**
-> > - **Coverage**: 18 distinct regions across China
-> > - **Temporal Design**: Triple-image sequences per region (target + two auxiliary acquisitions)
-> > - **Data Volume**: 41,004 patches (256×256 pixels)
-> > - **Split Ratio**: 5:1 training/testing
+---
 
-> **Preprocessing**: Following ESA standards using SNAP and PolSARPro, including orbit correction, radiometric calibration, and polarimetric decomposition.
+## 📊 Dataset Description
 
-> ### Dataset Availability
+We constructed a large-scale multitemporal Sentinel-1 **dual-polarization SLC dataset** that preserves both amplitude and phase information — essential for speckle modeling and physical scattering consistency.
 
-> 📥 **Download**: Links to [here](https://pan.baidu.com/s/1iwMNjt2CjvE4fKSMozXXHQ?pwd=1111) download the data.
+### Specifications
+| Property | Description |
+|-----------|-------------|
+| **Coverage** | 18 distinct regions across China |
+| **Temporal Structure** | Triplets: (target + two auxiliary acquisitions) |
+| **Patch Size** | 256×256 pixels |
+| **Total Samples** | 41,004 patches |
+| **Split Ratio** | 5:1 (Train : Test) |
 
-> **File Structure**:
-> > Sentinel-1 time-series data/
+### Preprocessing
+Performed using **ESA SNAP** and **PolSARPro**, including:
+- Orbit correction  
+- Radiometric calibration  
+- Polarimetric decomposition (H/A/α)  
+- Coherency/Covariance matrix generation  
 
-> > ├── S01/
+### Download
+📦 Links to [here (Baidu Cloud)](https://pan.baidu.com/s/1iwMNjt2CjvE4fKSMozXXHQ?pwd=1111) download the data. Password: `1111`
+```
+Sentinel-1 time-series data/
+├── S01/
+│ ├── S01_Ass_S1A_YYYYMMDDTHHMMSS/ # Auxiliary 1
+│ ├── S01_Ass_S1A_YYYYMMDDTHHMMSS/ # Auxiliary 2
+│ └── S01_Tar_S1A_YYYYMMDDTHHMMSS/ # Target
+├── ...
+└── S18/
+└── Basic information.xlsx
+```
 
-> > │ ├── S01_Ass_S1A_YYYYMMDDTHHMMSS/ # Auxiliary phase 1
+**Naming Convention:**
+- `Tar`: Target phase for despeckling  
+- `Ass`: Auxiliary temporal phases  
+- `S01–S18`: 18 geographical regions  
+- `S1A/S1C`: Sentinel-1 satellite identifier  
 
-> > │ ├── S01_Ass_S1A_YYYYMMDDTHHMMSS/ # Auxiliary phase 2
+---
 
-> > │ └── S01_Tar_S1A_YYYYMMDDTHHMMSS/ # Target phase
+## 🧠 Network Overview
 
-> > ├── S02/
+### Core Modules
+| Module | Function |
+|---------|-----------|
+| **SPP (SFS_Conv)** | Shunt Parallel Perception — spatial–frequency fusion using FrGT/FrFT filters |
+| **AFG** | Adaptive Feature Gating — learnable frequency-domain modulation |
+| **HFA** | Holistic Feature Aggregation — combines CFR-SA and DFR-SA mechanisms |
+| **DDCR** | Dual-Domain Collaborative Refinement — integrates SPP, AFG, and HFA |
+| **R²A Group** | Recursive Residual Aggregation — progressive temporal refinement |
+| **CollaborativeLoss** | Combines fidelity, edge, and temporal losses with uncertainty weighting |
 
-> > │ ├── S02_Ass_S1C_YYYYMMDDTHHMMSS/
+---
 
-> > │ ├── S02_Ass_S1C_YYYYMMDDTHHMMSS/
+## 📂 Repository Structure
 
-> > │ └── S02_Tar_S1C_YYYYMMDDTHHMMSS/
+```
+MTPI-Net/
+├── modules/
+│ ├── SPP.py # Shunt Parallel Perception module
+│ ├── AFG.py # Adaptive Feature Gating module
+│ ├── HFA.py # Holistic Feature Aggregation module
+│ ├── DDCR.py # Dual-Domain Collaborative Refinement
+│ ├── MTPI_Net.py # Main network (FEN + R2A + DDCR)
+│ ├── losses.py # Collaborative optimization loss
+├── train.py # Training script
+├── inference.py # Inference script
+├── requirements.txt # Dependencies
+├── README.md
+└── checkpoints/ # Model weights
+```
 
-> > ├── ...
+---
 
-> > ├── S18/
+## ⚙️ Environment Setup
 
-> > └── Basic information.xlsx # Metadata and documentation
+```bash
+conda create -n mtpi python=3.9
+conda activate mtpi
+pip install -r requirements.txt
+```
 
-> **Naming Convention**:
-> > - `Tar`: Target phase for despeckling
-> > - `Ass`: Auxiliary temporal phases (preceding and succeeding)
-> > - `S01-S18`: 18 geographical regions
-> > - `S1A/S1C`: Sentinel-1 satellite identifier
+## 🏋️ Training
 
-## 📦 Code
+```
+python train.py --epochs 60 --batch_size 8 --lr 1e-4 --device cuda
+```
 
-The source code will be available soon.
+### Settings:
+- Optimizer: AdamW
+- LR schedule: CosineAnnealing (1e-4 → 1e-6)
+- Loss: CollaborativeLoss (σ-weighted multi-term)
+- Checkpoints: saved automatically in ./checkpoints/
+
+## 🔍 Inference
+```
+python inference.py \
+    --model_path ./checkpoints/mtpi_epoch_060.pth \
+    --save_dir ./results
+```
+### Output:
+- .npy despeckled image files
+- Optional .tif export (enabled via tifffile)
+
+## 📜 Citation
+
+If you use this code or dataset, please cite:
+```
+@article{Xu2025MTPI,
+  title={Enhanced Noise2Noise-Based Multitemporal Progressive Interaction Learning for Real Dual-Polarization SAR Imagery Despeckling},
+  author={Xu, Jiangong and Yang, Yang and Xue, Weibao and Pi, Yingdong and Li, Junli and Pan, Jun and Wang, Mi},
+  journal={XXXX},
+  year={2025}
+}
+```
+## 📄 License
+This project is released under the **MIT License**.
+© 2025 Jiangong Xu et al. All rights reserved.
+
+🙌 Acknowledgments
+
+- This implementation references **ESA SNAP** and **PolSARpro** for preprocessing, and builds upon the PyTorch deep learning framework.
+- We thank the **Sentinel-1 mission** team for their constructive feedback and data support.
+- For the construction of the SPP Module, we referenced [**SFS-Conv**](https://github.com/like413/SFS-Conv/tree/main).
+
+
+
+
+
+
+
+
