@@ -6,8 +6,8 @@ from torch.utils.data import Dataset, DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR
 from tqdm import tqdm
 
-from modules.MTPI_Net import MTPI_Net
-from modules.losses import CollaborativeLoss, compute_temporal_pairs
+from MTPI_Net import MTPI_Net
+from CO_Loss import CollaborativeLoss, compute_temporal_pairs
 
 # ================================================================
 # Dataset Definition
@@ -131,3 +131,4 @@ if __name__ == "__main__":
 
     train_set = SentinelDualPolDataset(data_list)
     train_mtpi(train_set, epochs=2, batch_size=2)
+
